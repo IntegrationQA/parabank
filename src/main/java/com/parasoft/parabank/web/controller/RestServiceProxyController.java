@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,8 +17,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +65,13 @@ public class RestServiceProxyController extends AbstractBankController implement
     private MessageSource messageSource;
 
     private ServletContext context;
-    
+
     @Resource(name = "accessModeController")
     private AccessModeController accessModeController;
 
     @Resource(name = "adminManager")
     private AdminManager adminManager;
-    
+
     @Override
     public void setAccessModeController(final AccessModeController accessModeController) {
         this.accessModeController = accessModeController;
@@ -81,10 +80,10 @@ public class RestServiceProxyController extends AbstractBankController implement
     public void setAdminManager(final AdminManager adminManager) {
         this.adminManager = adminManager;
     }
-    
+
     @Override
     public void setServletContext(ServletContext servletContext) {
-        this.context = servletContext;
+        context = servletContext;
     }
 
     @RequestMapping(value = "bank/customers/{id}/accounts", method = RequestMethod.GET, produces = "application/json")
@@ -182,7 +181,7 @@ public class RestServiceProxyController extends AbstractBankController implement
         }
         return customer;
     }
-    
+
     @RequestMapping(value = "bank/customers/update/{customerId}", method = RequestMethod.POST, produces = "application/json")
     public String updateCustomer(@PathVariable(value = "customerId") Integer customerId,
             @RequestParam("firstName") String firstName,
@@ -362,7 +361,7 @@ public class RestServiceProxyController extends AbstractBankController implement
             return bankManager.getTransactionsForAccount(accountId, criteria);
         }
     }
-    
+
     @RequestMapping(value = "bank/swagger.yaml")
     public ResponseEntity<String> getSwagger(HttpServletRequest request) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.getResourceAsStream("/WEB-INF/swagger.yaml")))) {
@@ -370,7 +369,7 @@ public class RestServiceProxyController extends AbstractBankController implement
             String content = br.lines().collect(Collectors.joining(System.lineSeparator())).replaceFirst("replace-host-name", host);
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/yaml");
-            return new ResponseEntity<String>(content, headers, HttpStatus.OK);
+            return new ResponseEntity<>(content, headers, HttpStatus.OK);
         }
     }
 
@@ -413,7 +412,7 @@ public class RestServiceProxyController extends AbstractBankController implement
                 String basic = st.nextToken();
                 if (basic.equalsIgnoreCase("Basic")) {
                     try {
-                        String credentials = new String(Base64.decode(st.nextToken()), "UTF-8");
+                        String credentials = new String(Base64.getDecoder().decode(st.nextToken()), "UTF-8");
                         int p = credentials.indexOf(":");
                         if (p != -1) {
                             String username = credentials.substring(0, p).trim();
@@ -427,7 +426,7 @@ public class RestServiceProxyController extends AbstractBankController implement
                             throw new AuthenticationException(
                                     messageSource.getMessage("error.invalid.username.or.password", null, locale));
                         }
-                    } catch (Base64DecodingException e) {
+                    } catch (IllegalArgumentException e) {
                         throw new AuthenticationException(
                                 messageSource.getMessage("error.invalid.username.or.password", null, locale));
                     }

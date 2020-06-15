@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,7 +28,7 @@ import com.parasoft.parabank.web.UserSession;
 @SessionAttributes(Constants.OPENACCOUNTFORM)
 @RequestMapping("/openaccount.htm")
 public class OpenAccountController extends AbstractBankController {
-    private static final Logger log = LoggerFactory.getLogger(OpenAccountController.class);
+    //private static final Logger log = LoggerFactory.getLogger(OpenAccountController.class);
 
     @Resource(name = "adminManager")
     private AdminManager adminManager;
@@ -46,7 +44,7 @@ public class OpenAccountController extends AbstractBankController {
 
     @ModelAttribute("types")
     public List<AccountType> getAccountTypes() {
-        final List<AccountType> types = new ArrayList<AccountType>();
+        final List<AccountType> types = new ArrayList<>();
         for (final AccountType type : AccountType.values()) {
             if (!type.isInternal()) {
                 types.add(type);
@@ -59,7 +57,7 @@ public class OpenAccountController extends AbstractBankController {
     public String getMinimumBalance() {
         return adminManager.getParameter(AdminParameters.MINIMUM_BALANCE);
     }
-    
+
     @ModelAttribute("customerId")
     public int getCustomerId(@SessionParam(Constants.USERSESSION) final UserSession userSession) {
         return userSession.getCustomer().getId();

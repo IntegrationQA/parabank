@@ -1,9 +1,10 @@
 package com.parasoft.parabank.web.form;
 
-import java.math.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.parasoft.parabank.domain.logic.*;
+import com.parasoft.parabank.domain.logic.AdminParameters;
 
 /**
  * Backing class for admin settings form
@@ -50,7 +51,6 @@ public class AdminForm {
         return minimumBalance;
     }
 
-    @SuppressWarnings("serial")
     public Map<String, String> getParameters() {
         return new HashMap<String, String>() {{
             put(AdminParameters.ENDPOINT, endpoint);

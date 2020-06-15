@@ -1,27 +1,17 @@
 package com.parasoft.parabank.web.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.*;
-import java.util.*;
-
-import org.junit.*;
-import org.reflections.util.*;
-import org.springframework.mock.web.*;
-import org.springframework.test.annotation.*;
-import org.springframework.transaction.annotation.*;
-import org.springframework.web.servlet.*;
-
-import com.parasoft.parabank.domain.*;
-import com.parasoft.parabank.util.*;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @req PAR-8
  * @req PAR-9
  * @req PAR-10
  */
-@SuppressWarnings({ "unchecked" }) public class AccountActivityControllerTest
-        extends AbstractBankControllerTest<AccountActivityController> {
+public class AccountActivityControllerTest extends AbstractBankControllerTest<AccountActivityController> {
 
     @Override
     public void onSetUp() throws Exception {
